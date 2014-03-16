@@ -8,10 +8,6 @@ describe HashLike do
     it "it is empty" do
       new_hash.empty?.should be_true
     end
-
-    it "has ten buckets" do
-      new_hash.buckets.should eq 1039
-    end
   end
 
   describe "#[]=" do
@@ -34,6 +30,25 @@ describe HashLike do
       test_hash["two"] = []
 
       test_hash["three"].should == "banana"
+    end
+  end
+
+  describe "#delete" do
+    let(:test_hash) { HashLike.new }
+
+    before do
+      test_hash["one"] = 1
+      test_hash["two"] = 2
+      test_hash["three"] = "banana"
+      test_hash["two"] = []
+    end
+
+    it "deletes the correct bucket item" do
+      test_hash.delete("three").should == ["three", "banana"]
+    end
+
+    it "returns false if key doesn't exist" do
+      test_hash.delete("ten").should be_false
     end
   end
 

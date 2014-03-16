@@ -1,4 +1,3 @@
-require 'digest/md5'
 
 class HashLike
 
@@ -13,8 +12,13 @@ class HashLike
     true if @count <= 0
   end
 
-  def buckets
-    @buckets.count
+  def delete(key)
+    if keys.include?(key)
+      bucket_item = get_bucket_item(key)
+      @buckets[get_bucket_index(key)].delete(bucket_item)
+    else
+      return false
+    end
   end
 
   def keys
@@ -35,8 +39,7 @@ class HashLike
 
   def []=(key, value)
     return nil if key == nil
-    digest = make_digest(key)
-    bucket = get_bucket_index(digest)
+    bucket = get_bucket_index(key)
 
     if (bucket_item = get_bucket_item(key))
       bucket_item[1] = value
@@ -49,9 +52,8 @@ class HashLike
 private
 
   def get_bucket_item(key)
-    digest = make_digest(key)
-    bucket = get_bucket_index(digest)
-    @buckets[bucket].each do |bucket_item|
+    bucket_index = get_bucket_index(key)
+    @buckets[bucket_index].each do |bucket_item|
       if bucket_item.first == key
         return bucket_item
       end
@@ -59,11 +61,7 @@ private
     false
   end
 
-  def get_bucket_index(digest)
-    digest % @buckets.count
-  end
-
-  def make_digest(str)
-    Digest::MD5.hexdigest(str).to_i(16)
+  def get_bucket_index(key)
+    key.hash % @buckets.count
   end
 end
