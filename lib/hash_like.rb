@@ -26,7 +26,7 @@ class HashLike
   end
 
   def [](key)
-    if (bucket_item = key_exists key)
+    if (bucket_item = get_bucket_item(key))
       bucket_item[1]
     else
       nil
@@ -36,9 +36,9 @@ class HashLike
   def []=(key, value)
     return nil if key == nil
     digest = make_digest(key)
-    bucket = get_bucket(digest)
+    bucket = get_bucket_index(digest)
 
-    if (bucket_item = key_exists(key))
+    if (bucket_item = get_bucket_item(key))
       bucket_item[1] = value
     else
       @buckets[bucket] << [key, value]
@@ -48,9 +48,9 @@ class HashLike
 
 private
 
-  def key_exists(key)
+  def get_bucket_item(key)
     digest = make_digest(key)
-    bucket = get_bucket(digest)
+    bucket = get_bucket_index(digest)
     @buckets[bucket].each do |bucket_item|
       if bucket_item.first == key
         return bucket_item
@@ -59,7 +59,7 @@ private
     false
   end
 
-  def get_bucket(digest)
+  def get_bucket_index(digest)
     digest % @buckets.count
   end
 

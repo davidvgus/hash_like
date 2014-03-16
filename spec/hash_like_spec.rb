@@ -10,7 +10,7 @@ describe HashLike do
     end
 
     it "has ten buckets" do
-      new_hash.buckets.should eq 10
+      new_hash.buckets.should eq 1039
     end
   end
 
