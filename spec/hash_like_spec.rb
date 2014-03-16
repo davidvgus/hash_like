@@ -11,12 +11,27 @@ describe HashLike do
   end
 
   describe "#[]=" do
+    let(:test_hash) { HashLike.new }
+
     context "when adding an item" do
-      let(:test_hash) { HashLike.new }
 
       it "increments count by one." do
         expect{test_hash["nines"]= 999}.to change{test_hash.count}.from(0).to(1)
       end
+    end
+
+    it "behaves correctly when two keys have same hash" do
+      string1 = "s1"
+      string1.stub(:hash) { 0 }
+
+      string2 = "s2"
+      string2.stub(:hash) { 0 }
+
+      test_hash[string1] = "one"
+      test_hash[string2] = "two"
+
+      test_hash[string1].should == "one"
+      test_hash[string2].should == "two"
     end
   end
 
